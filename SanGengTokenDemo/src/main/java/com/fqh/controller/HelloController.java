@@ -10,8 +10,10 @@ public class HelloController {
 
 
 //    @PreAuthorize("hasAuthority('system:dept:list')")
-    @PreAuthorize("hasAnyAuthority('system:dept:list', 'system:test:list')")
+//    @PreAuthorize("hasAnyAuthority('system:dept:list', 'system:test:list')")
 //    @PreAuthorize("hasRole('system:dept:list')") => 会带ROLE_前缀 => ROLE_system:dept:list
+
+    @PreAuthorize("@myExpressionRoot.hasAuthority('system:dept:list')")
     @RequestMapping("/hello")
     public String hello() {
         return "hello";
