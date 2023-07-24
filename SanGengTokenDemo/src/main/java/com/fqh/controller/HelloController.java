@@ -24,4 +24,10 @@ public class HelloController {
     public ResponseResult testCors() {
         return new ResponseResult(200, "testCors");
     }
+
+    @PreAuthorize("@myExpressionRoot.hasAnyAuthority('system:dept:list', 'system:test:test')")
+    @RequestMapping("/cxk")
+    public ResponseResult testCXK() {
+        return new ResponseResult(200, "你干嘛~哎哟");
+    }
 }

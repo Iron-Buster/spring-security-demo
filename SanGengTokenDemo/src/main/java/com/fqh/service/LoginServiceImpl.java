@@ -3,6 +3,7 @@ package com.fqh.service;
 import com.fqh.common.ResponseResult;
 import com.fqh.entity.LoginUser;
 import com.fqh.entity.User;
+import com.fqh.mapper.UserMapper;
 import com.fqh.utils.JwtUtil;
 import com.fqh.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,6 +26,12 @@ public class LoginServiceImpl implements LoginService{
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public ResponseResult login(User user) {
@@ -54,5 +62,14 @@ public class LoginServiceImpl implements LoginService{
         // 删除redis的用户信息
         redisCache.deleteObject("login:" + userId);
         return new ResponseResult(200, "注销成功");
+    }
+
+    @Override
+    public ResponseResult register(User user) {
+        String password = user.getPassword();
+        String passwordMD5 = passwordEncoder.encode(password);
+        user.setPassword(passwordMD5);
+        userMapper.insert(user);
+        return new ResponseResult(200, "注册成功");
     }
 }
